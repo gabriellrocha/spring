@@ -1,0 +1,10 @@
+# Maven
+**/target/
+
+# PDFs
+pdfs/
+
+# IDE / OS (opcional)
+**/.idea/
+**/*.iml
+.DS_Store
