@@ -10,3 +10,18 @@ CREATE TABLE IF NOT EXISTS products (
     name VARCHAR(150) NOT NULL,
     price DECIMAL(10,2) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    username VARCHAR(50) PRIMARY KEY,
+    password VARCHAR(100) NOT NULL,
+    enabled BOOLEAN NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS authorities (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    authority VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_authorities_users
+    FOREIGN KEY (username) REFERENCES users(username),
+    UNIQUE KEY uk_username_authority (username, authority)
+);

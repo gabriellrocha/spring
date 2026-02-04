@@ -8,30 +8,43 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class SecurityConfig {
 
+//    @Bean
+//    Autenticação stateless com Basic Auth
+//    Hardcoded users
+//    In-Memory Authentication
+//    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
+//
+//        UserDetails gabriel = User.builder()
+//                .username("gabriel")
+//                .password("{noop}gabriel123")
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails maria = User.builder()
+//                .username("maria")
+//                .password("{noop}maria123")
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(gabriel, maria);
+//    }
+
     @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-
-        UserDetails gabriel = User.builder()
-                .username("gabriel")
-                .password("{noop}gabriel123")
-                .roles("ADMIN")
-                .build();
-
-        UserDetails maria = User.builder()
-                .username("maria")
-                .password("{noop}maria123")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(gabriel, maria);
+    // Autenticação stateless com Basic Auth
+    // JDBC Authetication
+    // Sem overhead de ORM (não usa JPA/Hibernate)
+    // Requisitos no BD: Tabela users(username, password, enabled) + Tabela authorities(username, authority)
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
@@ -46,11 +59,11 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(configurer ->
 
                 configurer
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/students").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/students/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/students").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/students/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/students/**").hasRole("ADMIN")
                 );
 
                 // Habilita a autenticação HTTP Basic
