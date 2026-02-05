@@ -25,3 +25,18 @@ CREATE TABLE IF NOT EXISTS authorities (
     FOREIGN KEY (username) REFERENCES users(username),
     UNIQUE KEY uk_username_authority (username, authority)
 );
+
+CREATE TABLE IF NOT EXISTS members (
+    user_id VARCHAR(50) NOT NULL,
+    pw VARCHAR(100) NOT NULL,
+    active BOOLEAN NOT NULL,
+    PRIMARY KEY (user_id)
+);
+
+CREATE TABLE IF NOT EXISTS roles (
+    user_id VARCHAR(50) NOT NULL,
+    `role` VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_roles_users
+    FOREIGN KEY (user_id) REFERENCES members(user_id),
+    UNIQUE KEY uk_members_roles (user_id, role)
+);

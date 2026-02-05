@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
@@ -38,13 +39,31 @@ public class SecurityConfig {
 //        return new InMemoryUserDetailsManager(gabriel, maria);
 //    }
 
-    @Bean
+//    @Bean
     // Autenticação stateless com Basic Auth
     // JDBC Authetication
     // Sem overhead de ORM (não usa JPA/Hibernate)
     // Requisitos no BD: Tabela users(username, password, enabled) + Tabela authorities(username, authority)
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
+    // OBS: Permitido utilizar tabelas personalizadas, desde que informe as queries
+//    public UserDetailsService userDetailsService(DataSource dataSource) {
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
+
+    // JDBC Authentication com tabelas personalizadas
+    @Bean
+    public UserDetailsManager userDetailsManager(DataSource dataSource) {
+        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+
+        // query to retrieve a user by username
+        manager.setUsersByUsernameQuery(
+                "SELECT user_id, pw, active from members where user_id = ?"
+        );
+
+        // query to retrieve the authorities/roles by username
+        manager.setAuthoritiesByUsernameQuery(
+                "SELECT user_id, role from roles where user_id = ?"
+        );
+        return manager;
     }
 
     @Bean
