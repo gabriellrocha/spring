@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/student-form.css}" />
+    <title>Student Registration Form</title>
+</head>
+
+<body>
+
+    <h3>Student Registration Form</h3>
+
+    <div class="main">
+        <form th:action="@{/process-form-student}" th:object="${student}" method="POST" class="form">
+            <!-- th:field gera automaticamente (name, id, value) para a tag-->
+
+            <div>
+                <label for="firstName">First Name:</label>
+                <input type="text" th:field="*{firstName}" id="firstName" required/>
+            </div>
+
+            <div>
+                <label for="lastName">Last Name:</label>
+                <input type="text" th:field="*{lastName}" id="lastName" required/>
+            </div>
+
+            <div>
+                <label for="country">Country:</label>
+                <select th:field="*{country}" id="country" required>
+                    <option th:value="Brazil">Brazil</option>
+                    <option th:value="France">France</option>
+                    <option th:value="Germany">Germany</option>
+                </select>
+            </div>
+
+
+            <div>
+                Favorite Programming Language:
+                <input type="radio" th:text="C" th:field="*{programmingLanguage}" th:value="C" required/>
+                <input type="radio" th:text="Go" th:field="*{programmingLanguage}" th:value="Go"/>
+                <input type="radio" th:text="Java" th:field="*{programmingLanguage}" th:value="Java"/>
+                <input type="radio" th:text="Python" th:field="*{programmingLanguage}" th:value="Python"/>
+            </div>
+
+            <div>
+                Favorite Operating System:
+                <input type="checkbox" th:field="*{operatingSystem}" th:value="Linux" required>Linux</input>
+                <input type="checkbox" th:field="*{operatingSystem}" th:value="macOS">macOS</input>
+                <input type="checkbox" th:field="*{operatingSystem}" th:value="Windows">Windows</input>
+            </div>
+
+            <input type="submit" value="Submit"/>
+        </form>
+    </div>
+</body>
+
+</html>
